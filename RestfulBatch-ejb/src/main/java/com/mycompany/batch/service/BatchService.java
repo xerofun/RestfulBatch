@@ -3,24 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany;
+package com.mycompany.batch.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashSet;
+import com.mycompany.jsl.Job;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.batch.operations.JobOperator;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.JobExecution;
 import javax.batch.runtime.JobInstance;
-import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,6 +26,9 @@ import javax.ejb.LocalBean;
 @LocalBean
 public class BatchService
 {
+    @Inject private JobService jobService;
+    
+    private final Logger logger = LoggerFactory.getLogger(BatchService.class);
 
     public void dumpDetails()
     {
@@ -70,37 +69,10 @@ public class BatchService
      * TODO: Cache this result
      * TODO: Make this work for jar's
      * TODO: Add FileFilter for .xml files
+     * TODO: Migrate this to JobService
      */
-    public Set<String> getJobIDs()
+    public Map<String, Job> getJobs()
     {
-        Set<String> jobIDs = new HashSet<>();
-        
-        try
-        {
-            Enumeration<URL> resources = Thread.currentThread()
-                    .getContextClassLoader()
-                    .getResources("META-INF/batch-jobs");
-            
-            if (resources.hasMoreElements())
-            {
-                URL batchJobsURL = resources.nextElement();
-                File  batchJobsRoot = new File(batchJobsURL.toURI());
-                String[] files = batchJobsRoot.list();
-                
-                for (String file : files)
-                {
-                    if (file.endsWith(".xml"))
-                    {
-                        jobIDs.add(file.replaceFirst("\\.xml$", ""));
-                    }
-                }
-            }
-        }
-        catch (IOException | URISyntaxException ex)
-        {
-            Logger.getLogger(BatchService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return jobIDs;
+        return jobService.getJobs();
     }
 }

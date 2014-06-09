@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-    <artifactId>RestfulBatch</artifactId>
-    <groupId>com.mycompany</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+        <artifactId>RestfulBatch</artifactId>
+        <groupId>com.mycompany</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
     <groupId>com.mycompany</groupId>
     <artifactId>RestfulBatch-ejb</artifactId>
@@ -30,6 +30,31 @@
 
     <build>
         <plugins>
+            <!-- Plugin required to build java classes from XSD using XJC -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schemaDirectory>
+                        ${basedir}/src/main/resources/META-INF/jaxb
+                    </schemaDirectory>
+                    <packageName>
+                        com.mycompany.jsl
+                    </packageName>
+                    <outputDirectory>
+                        ${basedir}/target/generated-sources/jaxb
+                    </outputDirectory>
+                        
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
